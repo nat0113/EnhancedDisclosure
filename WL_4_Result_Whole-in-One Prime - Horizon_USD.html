@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fulfillment Ratio for Terminal Bonus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .result-section {
+            max-width: 2000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-grid h2 {
+            margin-bottom: 20px;
+        }
+
+        .result-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .superscript {
+            font-size: 0.75em;
+            vertical-align: super;
+        }
+
+        .dividend_note, .bonus_note {
+            margin-top: 20px;
+        }
+
+        .cta-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .cta-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .button-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+
+<div class="result-section">
+    <div class="result-grid" id="annual-bonus">
+        <h2>Fulfillment Ratio for Annual Bonus</h2>
+        <div class="shadow-anchor">
+            <div class="result-table scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="productName" scope="col">Product series</th>
+                            <th class="productType" scope="col">Product type</th>
+                            <th class="currency" scope="col">Policy currency</th>
+                            <th class="ratioNo" colspan="11" scope="col">Fulfillment ratios for terminal bonus for reporting year 2023</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="table1" class="result-row">
+                            <td style="z-index:1;" rowspan="2">
+                                <span>Whole-in-One Prime - Horizon</span><br>
+                                <span style="font-size: 14px;">(For policies effective on or after July 29, 2019 and before September 30, 2020)</span>
+                            </td>
+                            <td rowspan="2">Participating Whole Life</td>
+                            <td rowspan="2">USD</td>
+                            <td>Policy Year 1<br>(Policy effective in 2022)</td>
+                            <td>Policy Year 2<br>(Policy effective in 2021)</td>
+                            <td>Policy Year 3<br>(Policy effective in 2020)</td>
+                            <td>Policy Year 4<br>(Policy effective in 2019)</td>
+                            <td>Policy Year 5<br>(Policy effective in 2018)</td>
+                            <td>Policy Year 6<br>(Policy effective in 2017)</td>
+                            <td>Policy Year 7<br>(Policy effective in 2016)</td>
+                            <td>Policy Year 8<br>(Policy effective in 2015)</td>
+                            <td>Policy Year 9<br>(Policy effective in 2014)</td>
+                            <td>Policy Year 10<br>(Policy effective in 2013)</td>
+                            <td>Policy Year 10+<br>(Policy effective in 2010-2012)</td>
+                        </tr>
+                        <tr class="result-row">
+                            <td><span>N/A <span class="superscript">4</span></span></td>
+                            <td><span>N/A <span class="superscript">4</span></span></td>
+                            <td><span>107%</span></td>
+                            <td><span>107%</span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                            <td><span>N/A <span class="superscript">3</span></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="result-remarks footnote">
+            <div class="dividend_note">
+                <p>Notes:</p>
+                <ol>
+                    <li>For the purpose of fulfillment ratio calculation, it is assumed that the notional amount / guaranteed amount / guaranteed annual income of the policies as of the end of the reporting year are retroactively applied since respective policy issuance and remained unchanged throughout.</li>
+                    <li>Fulfillment ratios may not be applicable (that is, shown as “N/A” in the results above) due to one or more of the following reason(s):</li>
+                    <ul>
+                        <li>N/A<sup>1</sup>: No relevant policy is terminated as of the end of the reporting year </li>
+                        <li>N/A<sup>2</sup>: The amount of non-guaranteed terminal bonus illustrated at the point of sale up to the respective policy year is zero for the relevant policies</li>
+                        <li>N/A<sup>3</sup>: Not yet launched</li>
+                        <li>N/A<sup>4</sup>: Closed to sales</li>
+                    </ul>
+                    <li>Fulfillment ratios for some product series may be available in the specified policy year before the product series is launched or after the product series is closed to sales. It may be due to various reasons including but not limited to policy actions such as policy backdating, or time required for underwriting process.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-wrapper">
+        <a class="cta-btn" href="javascript:void(0);" onclick="resetAction(2);">
+            <div class="searchresult">Search again</div>
+        </a>
+    </div>
+</div>
+
+<script>
+    function resetAction(id) {
+        // Implement the reset logic here
+        alert('Reset action triggered for id: ' + id);
+    }
+</script>
+
+</body>
+</html>

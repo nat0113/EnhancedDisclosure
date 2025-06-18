@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fulfillment Ratio Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 100px;
+            background-color: #f4f4f9;
+        }
+
+        .search-section {
+            width: 600px;
+            margin: 0 auto;
+            padding: 50px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .filter {
+            margin-bottom: 15px;
+        }
+
+        .nowrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .selection {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 5px;
+            width: 200px; /* Fixed width */
+        }
+
+        .selection-arrow-container {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: solid black;
+            border-width: 0 2px 2px 0;
+            padding: 3px;
+            transform: rotate(45deg);
+            margin-left: 5px;
+        }
+
+        .drop-down {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Fixed width */
+            z-index: 100;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .drop-down-list {
+            padding: 0;
+            margin: 0;
+        }
+
+        .item,
+        .group {
+            padding: 8px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
+            display: block;
+            white-space: nowrap;
+        }
+
+        .item:hover,
+        .group:hover {
+            background-color: #f4f4f9;
+        }
+
+        .button-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .cta-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .cta-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .group {
+            font-weight: bold;
+            margin-top: 10px;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-section">
+        <div class="filter line1">
+            <span>You want to see fulfillment ratios of&nbsp;</span>
+            <span class="nowrap">
+                <div class="selection" id="selection1">
+                    <span class="select-product" onclick="openDroplist('1')">
+                        <span id="selectedText1">select a product</span>
+                    </span>
+                    <div class="selection-arrow-container" onclick="openDroplist('1')">
+                        <div class="selection-arrow"></div>
+                    </div>
+                    <div class="drop-down" id="dropdown1">
+                        <div class="drop-down-list" id="product-list">
+                            <!-- Product options will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </div>
+
+        <div class="filter line2">
+            <span class="currency" id="currencyBox">
+                <span>and the policy currency is</span>
+                <div class="s-inline">
+                    <span></span>
+                    <div class="selection" id="selection2">
+                        <span class="" id="selectedText2" onclick="openDroplist('2')">select a currency</span>
+                        <div class="selection-arrow-container" onclick="openDroplist('2')">
+                            <div class="selection-arrow"></div>
+                        </div>
+                        <div class="drop-down" id="dropdown2">
+                            <div class="drop-down-list" id="currency-list">
+                                <!-- Currency options will be populated here based on product -->
+                            </div>
+                        </div>
+                    </div>
+                    <span>.</span>
+                </div>
+            </span>
+        </div>
+
+        <div class="button-wrapper">
+            <a class="cta-btn btn-v2 error" href="javascript:void(0);" onclick="resetAction();">
+                <div class="searchresult">Reset</div>
+            </a>
+            <a class="cta-btn" href="javascript:void(0);" onclick="openResultPage()" id="cta-btn-search">
+                <div class="searchresult">Search</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const products = {
+            "Participating Critical Illness": {
+                "Manulife Bright Care PRO": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_1_Result_Manulife Bright Care PRO_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_1_Result_Manulife Bright Care PRO_USD.html"
+                },
+                "ManuPrimo Care & ManuPrimo Care (BestStart)": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_2_Result_ManuPrimo Care & ManuPrimo Care (BestStart)_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_2_Result_ManuPrimo Care & ManuPrimo Care (BestStart)_USD.html"
+                },
+                "ManuBright Care 2": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_3_Result_ManuBright Care 2  2+_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_3_Result_ManuBright Care 2 2+_USD.html"
+                },
+                "ManuVital Care": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_4_Result_ManuVital Care_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_4_Result_ManuVital Care_USD.html"
+                }
+            
+            },
+            "Participating Life & Saving (Protection-Oriented)": {
+                "Prestige Preserver": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_1_Result_Prestige Preserver_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_1_Result_Prestige Preserver_USD.html"
+                },
+                "ManuFuture": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_8_Result_ManuFuture_USD.html"
+                },
+                "ManuVision": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_9_Result_ManuVision_USD.html"
+                },
+                "Wealth Target": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_11_Result_Wealth Target_HKD.html",
+                    "non-HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_11_Result_Wealth Target_non-HKD.html"
+                },
+                "Platinum One": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_12_Result_Platinum One_USD.html"
+                }
+            },
+            "Participating Life & Saving (Saving-Oriented)": {
+                "Prestige Saver": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_2_Result_Prestige Saver_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_2_Result_Prestige Saver_USD.html"
+                },
+                "ManuGlobal Saver": {
+                    "non-USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_3_Result_ManuGlobal Saver_non-USD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_3_Result_ManuGlobal Saver_USD.html"
+                },
+                "ManuGrand Saver 2": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_4_Result_ManuGrand Saver 2_USD.html"
+                },
+                "ManuImperial Saver 2": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_5_Result_ManuImperial Saver 2_USD.html"
+                },
+                "ManuGrand Saver": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_6_Result_ManuGrand Saver_USD.html"
+                },
+                "ManuImperial Saver": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_7_Result_ManuImperial Saver_USD.html"
+                },
+                "ManuSave": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\L&S_10_Result_ManuSave_USD.html"
+                }
+            },
+    
+            "Participating Whole Life": {
+                "ManuElite Protector": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\WL_1_Result_ManuElite Protector_USD.html"
+                },
+                "ManuPremier Protector": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\WL_2_Result_ManuPremier Protector_USD.html"
+                },
+                "Whole-in-One Prime 2": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\WL_3_Result_Whole-in-One Prime 2_USD.html"
+                },
+                "Whole-in-One Prime - Horizon": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\WL_4_Result_Whole-in-One Prime - Horizon_USD.html"
+                }
+            },
+            "Participating Income Plan": {
+                "FlexiFortune Annuity Plan": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_1_Result_FlexiFortune Annuity Plan_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_1_Result_FlexiFortune Annuity Plan_USD.html"
+                },
+                "La Vie 2": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_2_Result_La Vie 2_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_2_Result_La Vie 2_USD.html"
+                },
+                "ManuCentury": {
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_3_Result_ManuCentury_HKD.html",
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_3_Result_ManuCentury_USD.html"
+                },
+                "ManuLeisure Deferred Annuity": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_4_Result_ManuLeisure Deferred Annuity_USD.html"
+                }
+            },
+            "Historical Product Performance": {
+                "La Vie 2 (Prior Series)": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_2_Result_La Vie 2_USD_Prior.html",
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\IP_2_Result_La Vie 2_HKD_Prior.html"
+                },
+                "ManuBright Care 2 / 2+ (Prior Series)": {
+                    "USD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_3_Result_ManuBright Care 2 2+_USD _Prior.html",
+                    "HKD": "\\\\mfcgd.com\\ace\\Japan\\VSSC\\Users\\tsuilok\\Internship Group Project\\HTML\\CI_3_Result_ManuBright Care 2 2+_HKD _Prior.html"
+                }
+            }
+        };
+
+        let selectedProduct = null;
+        let selectedCurrency = null;
+        let selectedPath = null;
+
+        function openDroplist(id) {
+            const dropdown = document.getElementById('dropdown' + id);
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function loadProducts() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = ''; // Clear previous list
+            for (const [category, items] of Object.entries(products)) {
+                const group = document.createElement('div');
+                group.className = 'group';
+                group.innerText = category;
+                productList.appendChild(group);
+
+                for (const productName in items) {
+                    const productItem = document.createElement('a');
+                    productItem.className = 'item';
+                    productItem.href = 'javascript:void(0)';
+                    productItem.onclick = () => selectProduct(productName, items[productName]);
+                    productItem.innerText = productName;
+                    productList.appendChild(productItem);
+                }
+            }
+        }
+
+        function selectProduct(productName, productDetails) {
+            selectedProduct = productName;
+            document.getElementById('selectedText1').innerText = productName;
+            document.getElementById('dropdown1').style.display = 'none';
+
+            const currencyList = document.getElementById('currency-list');
+            currencyList.innerHTML = ''; // Clear previous list
+
+            // Prioritize USD in the currency list
+            if (productDetails['USD']) {
+                const usdItem = document.createElement('a');
+                usdItem.className = 'item';
+                usdItem.href = 'javascript:void(0)';
+                usdItem.onclick = () => selectCurrency('USD', productDetails['USD']);
+                usdItem.innerText = 'USD';
+                currencyList.appendChild(usdItem);
+
+                // Set USD as default
+                selectCurrency('USD', productDetails['USD']);
+            }
+
+            for (const currency in productDetails) {
+                if (currency !== 'USD') {
+                    const currencyItem = document.createElement('a');
+                    currencyItem.className = 'item';
+                    currencyItem.href = 'javascript:void(0)';
+                    currencyItem.onclick = () => selectCurrency(currency, productDetails[currency]);
+                    currencyItem.innerText = currency;
+                    currencyList.appendChild(currencyItem);
+                }
+            }
+        }
+
+        function selectCurrency(currency, path) {
+            selectedCurrency = currency;
+            selectedPath = path; // Store the path separately
+            document.getElementById('selectedText2').innerText = currency;
+            document.getElementById('dropdown2').style.display = 'none';
+        }
+
+        function openResultPage() {
+            if (selectedProduct && selectedCurrency && selectedPath) {
+                window.open(selectedPath, "_blank");
+            } else {
+                alert('Please select both a product and a currency.');
+            }
+        }
+
+        function resetAction() {
+            document.getElementById('selectedText1').innerText = 'select a product';
+            document.getElementById('selectedText2').innerText = 'select a currency';
+            document.getElementById('product-list').innerHTML = '';
+            document.getElementById('currency-list').innerHTML = '';
+            selectedProduct = null;
+            selectedCurrency = null;
+            selectedPath = null;
+            loadProducts(); // Reload products
+        }
+
+        document.addEventListener('click', function (event) {
+            const isDropdownClick = event.target.closest('.selection');
+            if (!isDropdownClick) {
+                document.querySelectorAll('.drop-down').forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            }
+        });
+
+        // Load products on page load
+        window.onload = loadProducts;
+    </script>
+
+</body>
+</html>
